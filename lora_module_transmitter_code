@@ -1,0 +1,36 @@
+#include <SPI.h>
+#include <LoRa.h>
+
+#define SCK 14
+#define MISO 12
+#define MOSI 13
+#define SS 15
+#define RST 4
+#define DI0 2
+
+void setup() {
+  Serial.begin(9600);
+  while (!Serial);  
+  Serial.println("LoRa Sender");
+  
+  SPI.begin(SCK, MISO, MOSI, SS);
+  LoRa.setPins(SS, RST, DI0);
+  
+  if (!LoRa.begin(433E6)) { // or 915E6, the MHz speed of your module
+    Serial.println("Starting LoRa failed!");
+    while (1);
+  }
+}
+
+void loop() {
+  String MyMessage = "Namaste india!"; // The message to transmit
+
+  // Send the message
+  LoRa.beginPacket();
+  LoRa.print(MyMessage);
+  LoRa.endPacket();
+
+  Serial.print("Message sent: ");
+  Serial.println(MyMessage);
+
+  delay(3000); 
